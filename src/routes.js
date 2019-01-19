@@ -37,6 +37,10 @@ const Widgets = React.lazy(() => import('./views/Widgets/Widgets'));
 const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 
+// Punpro Section
+const CategoryList = React.lazy(() => import('./views/Category/CategoryList'));
+const CategoryDetail = React.lazy(() => import('./views/Category/CategoryDetail'));
+
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
@@ -80,6 +84,10 @@ const routes = [
   { path: '/charts', name: 'Charts', component: Charts },
   { path: '/users', exact: true,  name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
+
+  // PUNPRO PATH
+  { path: '/categories', exact: true, name: 'Categories', component: CategoryList },
+  { path: '/category/:slug', exact: true, name: 'Category Details', component: CategoryDetail },
 ];
 
 export default routes;
