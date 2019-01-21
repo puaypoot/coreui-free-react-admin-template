@@ -3,6 +3,7 @@ import {
   Card, CardBody, CardHeader, Col, Row,
   Form, FormGroup, Label, FormText, CardFooter, Button
 } from 'reactstrap';
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 import { fetchCategory, createCategory, updateCategory } from '../../api/Category'
 
@@ -15,7 +16,8 @@ class Category extends Component {
       id: undefined,
       name: '',
       slug: '',
-    }
+    },
+    showSuccessDialog: false
   }
 
   componentDidMount() {
@@ -25,16 +27,19 @@ class Category extends Component {
     }
   }
 
-  submitData = () => {
+  submitData = async () => {
     let data = {
       name: this.state.name,
       slug: this.state.slug,
     }
     if(this.state.id!==undefined) {
-      updateCategory(this.state.id, data)
+      await updateCategory(this.state.id, data)
     } else {
-      createCategory(data)
+      await createCategory(data)
     }
+    this.setState({
+      showSuccessDialog: true
+    })
   }
 
   getDetail(slug) {
@@ -76,6 +81,32 @@ class Category extends Component {
     return (<strong><i className="icon-info pr-1"></i>New Category</strong>)
   }
 
+  updateSuccess = () => {
+    this.setState({
+      showSuccessDialog: false
+    })
+    if(this.state.id) {
+      return true
+    }
+    this.props.history.push('/category')
+  }
+
+  renderSuccessDialog = () => {
+    if(this.state.showSuccessDialog) {
+      const msg = `Category has been ${(this.state.id)? 'updated' : 'created'}.`
+      return (
+        (<SweetAlert
+          title='Success'
+          success
+          timeout={2000}
+          onConfirm={this.updateSuccess}
+        >
+          {msg}
+        </SweetAlert>)
+      )
+    }
+  }
+
   render() {
     let category = {
       name: this.state.name,
@@ -88,6 +119,7 @@ class Category extends Component {
             <Card>
               <CardHeader>
                 { this.renderCardHeaderContent() }
+                { this.renderSuccessDialog() }
               </CardHeader>
               <CardBody>
                 <Form>

@@ -54,10 +54,17 @@ class Categories extends Component {
     })
   }
 
+  hideSuccessDialog = () => {
+    this.setState({
+      showSuccessDialog : false
+    })
+  }
+
   deleteCategory = async () => {
     await deleteCategory(this.state.focusingCategory.id)
     this.setState({
-      focusingCategory : undefined
+      focusingCategory : undefined,
+      showSuccessDialog: true
     })
     this.getList()
   }
@@ -85,17 +92,13 @@ class Categories extends Component {
     }
   }
 
-  renderSuccessDialog(){
+  renderSuccessDoalog(){
     if(this.state.showSuccessDialog) {
       return (<SweetAlert
         success
-        showCancel
-        confirmBtnText="Yes, delete it!"
-        confirmBtnBsStyle="danger"
-        cancelBtnBsStyle="default"
-        title="Delete Category?"
-        onConfirm={this.deleteCategory}
-        onCancel={this.hideWarningDialog}
+        title='Success'
+        timeout={2000}
+        onConfirm={this.hideSuccessDialog}
       >
         Category has been deleted.
       </SweetAlert>)
@@ -111,11 +114,11 @@ class Categories extends Component {
           <Col xl={12}>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Categories
+                  <i className="fa fa-align-justify"></i> Categories
                 <div className="card-header-actions">
-                  <Link to='category/create'>
-                    <i className="fa fa-plus"></i>&nbsp;Create Category
-                  </Link>
+                  {/* <Link to='category/create'>
+                    <Button size="sm" color="primary" className="btn-pill"><i className="fa fa-plus"></i>&nbsp;Create Category</Button>
+                  </Link> */}
                 </div>
               </CardHeader>
               <CardBody>
