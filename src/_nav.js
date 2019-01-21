@@ -9,6 +9,33 @@ export default {
         text: 'NEW',
       },
     },
+    // Punpro Menu
+    {
+      title: true,
+      name: 'Post Management',
+      wrapper: {
+        element: '',
+        attributes: {}
+      },
+      class: ''
+    },
+    {
+      name: 'Category',
+      url: '/category',
+      icon: 'icon-bell',
+      children: [
+        {
+          name: 'List',
+          url: '/category',
+          icon: 'icon-bell',
+        },
+        {
+          name: 'Create',
+          url: '/category/create',
+          icon: 'icon-bell',
+        },
+      ]
+    },
     {
       title: true,
       name: 'Theme',
@@ -255,26 +282,26 @@ export default {
         },
       ],
     },
-    {
-      name: 'Disabled',
-      url: '/dashboard',
-      icon: 'icon-ban',
-      attributes: { disabled: true },
-    },
-    {
-      name: 'Download CoreUI',
-      url: 'https://coreui.io/react/',
-      icon: 'icon-cloud-download',
-      class: 'mt-auto',
-      variant: 'success',
-      attributes: { target: '_blank', rel: "noopener" },
-    },
-    {
-      name: 'Try CoreUI PRO',
-      url: 'https://coreui.io/pro/react/',
-      icon: 'icon-layers',
-      variant: 'danger',
-      attributes: { target: '_blank', rel: "noopener" },
-    },
+    // {
+    //   name: 'Disabled',
+    //   url: '/dashboard',
+    //   icon: 'icon-ban',
+    //   attributes: { disabled: true },
+    // },
+    // {
+    //   name: 'Download CoreUI',
+    //   url: 'https://coreui.io/react/',
+    //   icon: 'icon-cloud-download',
+    //   class: 'mt-auto',
+    //   variant: 'success',
+    //   attributes: { target: '_blank', rel: "noopener" },
+    // },
+    // {
+    //   name: 'Try CoreUI PRO',
+    //   url: 'https://coreui.io/pro/react/',
+    //   icon: 'icon-layers',
+    //   variant: 'danger',
+    //   attributes: { target: '_blank', rel: "noopener" },
+    // },
   ],
 };
