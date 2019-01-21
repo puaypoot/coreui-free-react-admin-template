@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardBody, CardHeader, Col, Row, Table, Button } from 'reactstrap';
+import SweetAlert from 'react-bootstrap-sweetalert'
 
-import { fetchList } from '../../api/Category'
+import { fetchList, deleteCategory } from '../../api/Category'
 
 function CategoryRow(props) {
   const category = props.category
   const categoryLink = `/category/${category.id}/edit`
   const deleteCategory = () => {
-    console.log('delete')
+    props.handleDelete(category)
   }
 
   return (
@@ -29,14 +30,16 @@ function CategoryRow(props) {
 
 class Categories extends Component {
   state = {
-    list: []
+    list: [],
+    focusingCategory: undefined,
+    showSuccessDialog: false
   }
 
   componentDidMount() {
     this.getList()
   }
 
-  getList() {
+  getList = () => {
     fetchList({}).then(response => {
       let list = response.data.data || []
       this.setState({
@@ -45,9 +48,65 @@ class Categories extends Component {
     })
   }
 
+  hideWarningDialog = () => {
+    this.setState({
+      focusingCategory : undefined
+    })
+  }
+
+  deleteCategory = async () => {
+    await deleteCategory(this.state.focusingCategory.id)
+    this.setState({
+      focusingCategory : undefined
+    })
+    this.getList()
+  }
+
+  handleDelete = (category) => {
+    this.setState({
+      focusingCategory: category
+    })
+  }
+
+  renderWarningDialog(){
+    if(this.state.focusingCategory) {
+      return (<SweetAlert
+        danger
+        showCancel
+        confirmBtnText="Yes, delete it!"
+        confirmBtnBsStyle="danger"
+        cancelBtnBsStyle="default"
+        title="Delete Category?"
+        onConfirm={this.deleteCategory}
+        onCancel={this.hideWarningDialog}
+      >
+        You will not be able to recover this category!
+      </SweetAlert>)
+    }
+  }
+
+  renderSuccessDialog(){
+    if(this.state.showSuccessDialog) {
+      return (<SweetAlert
+        success
+        showCancel
+        confirmBtnText="Yes, delete it!"
+        confirmBtnBsStyle="danger"
+        cancelBtnBsStyle="default"
+        title="Delete Category?"
+        onConfirm={this.deleteCategory}
+        onCancel={this.hideWarningDialog}
+      >
+        Category has been deleted.
+      </SweetAlert>)
+    }
+  }
+
   render() {
     return (
       <div className="animated fadeIn">
+        { this.renderWarningDialog() }
+        { this.renderSuccessDoalog() }
         <Row>
           <Col xl={12}>
             <Card>
@@ -71,7 +130,7 @@ class Categories extends Component {
                   </thead>
                   <tbody>
                     {this.state.list.map((category, index) =>
-                      <CategoryRow key={index} category={category}/>
+                      <CategoryRow key={index} category={category} handleDelete={this.handleDelete}/>
                     )}
                   </tbody>
                 </Table>

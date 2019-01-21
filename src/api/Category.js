@@ -30,3 +30,10 @@ export function updateCategory(id, data) {
     data
   })
 }
+
+export function deleteCategory(id) {
+  return request({
+    url: `category/${id}/`,
+    method: 'delete'
+  })
+}
