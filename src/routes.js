@@ -86,9 +86,10 @@ const routes = [
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
 
   // PUNPRO PATH
-  { path: '/categories', exact: true, name: 'Categories', component: CategoryList },
-  { path: '/category/create', exact: true, name: 'Category Create', component: CategoryDetail },
-  { path: '/category/:id/edit', exact: true, name: 'Category Edit', component: CategoryDetail },
+  { path: '/category', exact: true, name: 'Categories', component: CategoryList },
+  { path: '/category/list', name: 'Categories', component: CategoryList },
+  { path: '/category/create', name: 'Category Create', component: CategoryDetail },
+  { path: '/category/:id/edit', name: 'Category Edit', component: CategoryDetail },
 ];
 
 export default routes;

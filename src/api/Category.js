@@ -8,9 +8,9 @@ export function fetchList(query) {
   })
 }
 
-export function fetchCategory(slug) {
+export function fetchCategory(id) {
   return request({
-    url: `category/${slug}/`,
+    url: `category/${id}/`,
     method: 'get'
   })
 }
@@ -23,9 +23,9 @@ export function createCategory(data) {
   })
 }
 
-export function updateCategory(data) {
+export function updateCategory(id, data) {
   return request({
-    url: '/category/update',
+    url: `category/${id}/`,
     method: 'put',
     data
   })

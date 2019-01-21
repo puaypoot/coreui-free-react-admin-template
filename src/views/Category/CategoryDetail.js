@@ -4,15 +4,15 @@ import {
   Form, FormGroup, Label, FormText, CardFooter, Button
 } from 'reactstrap';
 
-import { fetchCategory } from '../../api/Category'
+import { fetchCategory, createCategory, updateCategory } from '../../api/Category'
 
 class Category extends Component {
   state =  {
-    id: null,
+    id: undefined,
     name: '',
     slug: '',
     defaultData: {
-      id: null,
+      id: undefined,
       name: '',
       slug: '',
     }
@@ -22,6 +22,18 @@ class Category extends Component {
     let id = this.props.match.params.id
     if(id) {
       this.getDetail(id)
+    }
+  }
+
+  submitData = () => {
+    let data = {
+      name: this.state.name,
+      slug: this.state.slug,
+    }
+    if(this.state.id!==undefined) {
+      updateCategory(this.state.id, data)
+    } else {
+      createCategory(data)
     }
   }
 
@@ -92,7 +104,7 @@ class Category extends Component {
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Submit</Button>&nbsp;
+                <Button size="sm" onClick={this.submitData} color="primary"><i className="fa fa-dot-circle-o"></i> Submit</Button>&nbsp;
                 <Button size="sm" onClick={this.reset} color="danger"><i className="fa fa-ban"></i> Reset</Button>
               </CardFooter>
             </Card>

@@ -21,7 +21,7 @@ export default {
     },
     {
       name: 'Category',
-      url: '/categories',
+      url: '/category',
       icon: 'icon-bell',
     },
     {
