@@ -37,6 +37,23 @@ export default {
       ]
     },
     {
+      name: 'Post',
+      url: '/post',
+      icon: 'icon-bell',
+      children: [
+        {
+          name: 'List',
+          url: '/post',
+          icon: 'icon-bell',
+        },
+        {
+          name: 'Create',
+          url: '/post/create',
+          icon: 'icon-bell',
+        },
+      ]
+    },
+    {
       title: true,
       name: 'Theme',
       wrapper: {            // optional wrapper object

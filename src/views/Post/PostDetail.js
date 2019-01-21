@@ -7,7 +7,7 @@ import SweetAlert from 'react-bootstrap-sweetalert'
 
 import { fetchCategory, createCategory, updateCategory } from '../../api/Category'
 
-class CategoryDetail extends Component {
+class PostDetail extends Component {
   state =  {
     id: undefined,
     name: '',
@@ -65,20 +65,20 @@ class CategoryDetail extends Component {
   }
 
   handleChange = (event) => {
-    let category = {...{
+    let post = {...{
       id: this.state.id,
       name: this.state.name,
       slug: this.state.slug,
     }}
-    category[event.target.id] = event.target.value
-    this.setState(category);
+    post[event.target.id] = event.target.value
+    this.setState(post);
   }
 
   renderCardHeaderContent = () => {
     if(this.state.id) {
-      return (<strong><i className="icon-info pr-1"></i>Category id: {this.state.id}</strong>)
+      return (<strong><i className="icon-info pr-1"></i>Post id: {this.state.id}</strong>)
     }
-    return (<strong><i className="icon-info pr-1"></i>New Category</strong>)
+    return (<strong><i className="icon-info pr-1"></i>New Post</strong>)
   }
 
   updateSuccess = () => {
@@ -88,12 +88,12 @@ class CategoryDetail extends Component {
     if(this.state.id) {
       return true
     }
-    this.props.history.push('/category')
+    this.props.history.push('/post')
   }
 
   renderSuccessDialog = () => {
     if(this.state.showSuccessDialog) {
-      const msg = `Category has been ${(this.state.id)? 'updated' : 'created'}.`
+      const msg = `Post has been ${(this.state.id)? 'updated' : 'created'}.`
       return (
         (<SweetAlert
           title='Success'
@@ -108,7 +108,7 @@ class CategoryDetail extends Component {
   }
 
   render() {
-    let category = {
+    let post = {
       name: this.state.name,
       slug: this.state.slug
     }
@@ -125,13 +125,13 @@ class CategoryDetail extends Component {
                 <Form>
                   <FormGroup>
                     <Label htmlFor="name">Name</Label>
-                    <input className="form-control" type="text" id="name" placeholder="Enter Name.." value={category.name} onChange={this.handleChange}/>
-                    <FormText className="help-block">Please enter category name</FormText>
+                    <input className="form-control" type="text" id="name" placeholder="Enter Name.." value={post.name} onChange={this.handleChange}/>
+                    <FormText className="help-block">Please enter post name</FormText>
                   </FormGroup>
                   <FormGroup>
                     <Label htmlFor="slug">Slug</Label>
-                    <input className="form-control" type="text" id="slug" placeholder="Enter Slug.." value={category.slug} onChange={this.handleChange} />
-                    <FormText className="help-block">Please enter category slug</FormText>
+                    <input className="form-control" type="text" id="slug" placeholder="Enter Slug.." value={post.slug} onChange={this.handleChange} />
+                    <FormText className="help-block">Please enter post slug</FormText>
                   </FormGroup>
                 </Form>
               </CardBody>
@@ -147,4 +147,4 @@ class CategoryDetail extends Component {
   }
 }
 
-export default CategoryDetail;
+export default PostDetail;

@@ -38,8 +38,14 @@ const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 
 // Punpro Section
+
+// category component
 const CategoryList = React.lazy(() => import('./views/Category/CategoryList'));
 const CategoryDetail = React.lazy(() => import('./views/Category/CategoryDetail'));
+
+// post component
+const PostList = React.lazy(() => import('./views/Post/PostList'));
+const PostDetail = React.lazy(() => import('./views/Post/PostDetail'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -86,9 +92,16 @@ const routes = [
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
 
   // PUNPRO PATH
+
+  // category path
   { path: '/category', exact: true, name: 'Categories', component: CategoryList },
   { path: '/category/create', name: 'Category Create', component: CategoryDetail },
   { path: '/category/:id/edit', name: 'Category Edit', component: CategoryDetail },
+
+  // post path
+  { path: '/post', exact: true, name: 'Post', component: PostList },
+  { path: '/post/create', name: 'Post Create', component: PostDetail },
+  { path: '/post/:id/edit', name: 'Post Edit', component: PostDetail },
 ];
 
 export default routes;
