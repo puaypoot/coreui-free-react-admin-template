@@ -23,6 +23,18 @@ export default {
       name: 'Category',
       url: '/category',
       icon: 'icon-bell',
+      children: [
+        {
+          name: 'List',
+          url: '/category',
+          icon: 'icon-bell',
+        },
+        {
+          name: 'Create',
+          url: '/category/create',
+          icon: 'icon-bell',
+        },
+      ]
     },
     {
       title: true,
