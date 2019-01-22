@@ -3,35 +3,35 @@ import { Link } from 'react-router-dom';
 import { Card, CardBody, CardHeader, Col, Row, Table, Button } from 'reactstrap';
 import SweetAlert from 'react-bootstrap-sweetalert'
 
-import { fetchList, deleteCategory } from '../../api/Category'
+import { fetchList, deletePost } from '../../api/Post'
 
-function CategoryRow(props) {
-  const category = props.category
-  const categoryLink = `/category/${category.id}/edit`
-  const deleteCategory = () => {
-    props.handleDelete(category)
+function PostRow(props) {
+  const post = props.post
+  const postLink = `/post/${post.id}/edit`
+  const deletePost = () => {
+    props.handleDelete(post)
   }
 
   return (
-    <tr key={category.id.toString()}>
-      <th scope="row"><Link to={categoryLink}>{category.id}</Link></th>
-      <td><Link to={categoryLink}>{category.name}</Link></td>
-      <td>{category.slug}</td>
+    <tr key={post.id.toString()}>
+      <th scope="row"><Link to={postLink}>{post.id}</Link></th>
+      <td><Link to={postLink}>{post.name}</Link></td>
+      <td>{post.slug}</td>
       <td>
-        <Link to={categoryLink}>
+        <Link to={postLink}>
           <Button size="sm" color="warning" className="btn-pill"><i className="fa fa-edit"></i>&nbsp;Edit</Button>
         </Link>
         &nbsp;
-        <Button onClick={deleteCategory} size="sm" color="danger" className="btn-pill"><i className="fa fa-edit"></i>&nbsp;Delate</Button>
+        <Button onClick={deletePost} size="sm" color="danger" className="btn-pill"><i className="fa fa-edit"></i>&nbsp;Delate</Button>
       </td>
     </tr>
   )
 }
 
-class Categories extends Component {
+class Posts extends Component {
   state = {
     list: [],
-    focusingCategory: undefined,
+    focusingPost: undefined,
     showSuccessDialog: false
   }
 
@@ -50,7 +50,7 @@ class Categories extends Component {
 
   hideWarningDialog = () => {
     this.setState({
-      focusingCategory : undefined
+      focusingPost : undefined
     })
   }
 
@@ -60,34 +60,34 @@ class Categories extends Component {
     })
   }
 
-  deleteCategory = async () => {
-    await deleteCategory(this.state.focusingCategory.id)
+  deletePost = async () => {
+    await deletePost(this.state.focusingPost.id)
     this.setState({
-      focusingCategory : undefined,
+      focusingPost : undefined,
       showSuccessDialog: true
     })
     this.getList()
   }
 
-  handleDelete = (category) => {
+  handleDelete = (post) => {
     this.setState({
-      focusingCategory: category
+      focusingPost: post
     })
   }
 
   renderWarningDialog(){
-    if(this.state.focusingCategory) {
+    if(this.state.focusingPost) {
       return (<SweetAlert
         danger
         showCancel
         confirmBtnText="Yes, delete it!"
         confirmBtnBsStyle="danger"
         cancelBtnBsStyle="default"
-        title="Delete Category?"
-        onConfirm={this.deleteCategory}
+        title="Delete Post?"
+        onConfirm={this.deletePost}
         onCancel={this.hideWarningDialog}
       >
-        You will not be able to recover this category!
+        You will not be able to recover this post!
       </SweetAlert>)
     }
   }
@@ -100,7 +100,7 @@ class Categories extends Component {
         timeout={2000}
         onConfirm={this.hideSuccessDialog}
       >
-        Category has been deleted.
+        Post has been deleted.
       </SweetAlert>)
     }
   }
@@ -114,10 +114,10 @@ class Categories extends Component {
           <Col xl={12}>
             <Card>
               <CardHeader>
-                  <i className="fa fa-align-justify"></i> Categories
+                  <i className="fa fa-align-justify"></i> Posts
                 <div className="card-header-actions">
-                  {/* <Link to='category/create'>
-                    <Button size="sm" color="primary" className="btn-pill"><i className="fa fa-plus"></i>&nbsp;Create Category</Button>
+                  {/* <Link to='post/create'>
+                    <Button size="sm" color="primary" className="btn-pill"><i className="fa fa-plus"></i>&nbsp;Create Post</Button>
                   </Link> */}
                 </div>
               </CardHeader>
@@ -132,8 +132,8 @@ class Categories extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {this.state.list.map((category, index) =>
-                      <CategoryRow key={index} category={category} handleDelete={this.handleDelete}/>
+                    {this.state.list.map((post, index) =>
+                      <PostRow key={index} post={post} handleDelete={this.handleDelete}/>
                     )}
                   </tbody>
                 </Table>
@@ -146,4 +146,4 @@ class Categories extends Component {
   }
 }
 
-export default Categories;
+export default Posts;

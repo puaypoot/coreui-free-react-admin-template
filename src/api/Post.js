@@ -2,20 +2,20 @@ import request from '../utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/post/',
+    url: '/posts/',
     method: 'get',
     params: query
   })
 }
 
-export function fetchCategory(id) {
+export function fetchPost(id) {
   return request({
     url: `post/${id}/`,
     method: 'get'
   })
 }
 
-export function createCategory(data) {
+export function createPost(data) {
   return request({
     url: '/post/',
     method: 'post',
@@ -23,7 +23,7 @@ export function createCategory(data) {
   })
 }
 
-export function updateCategory(id, data) {
+export function updatePost(id, data) {
   return request({
     url: `post/${id}/`,
     method: 'put',
@@ -31,7 +31,7 @@ export function updateCategory(id, data) {
   })
 }
 
-export function deleteCategory(id) {
+export function deletePost(id) {
   return request({
     url: `post/${id}/`,
     method: 'delete'
