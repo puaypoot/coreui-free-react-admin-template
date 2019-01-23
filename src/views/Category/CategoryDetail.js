@@ -136,8 +136,8 @@ class CategoryDetail extends Component {
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button size="sm" onClick={this.submitData} color="primary"><i className="fa fa-dot-circle-o"></i> Submit</Button>&nbsp;
-                <Button size="sm" onClick={this.reset} color="danger"><i className="fa fa-ban"></i> Reset</Button>
+                <Button size="lg" onClick={this.submitData} color="primary"><i className="fa fa-dot-circle-o"></i> Submit</Button>&nbsp;
+                <Button size="lg" onClick={this.reset} color="danger"><i className="fa fa-ban"></i> Reset</Button>
               </CardFooter>
             </Card>
           </Col>
