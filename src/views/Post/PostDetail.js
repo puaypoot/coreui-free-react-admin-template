@@ -2,13 +2,15 @@ import React, { Component } from 'react'
 import {
   Card, CardBody, CardHeader, Col, Row,
   Form, FormGroup, Label, FormText, CardFooter, Button,
-  InputGroup, InputGroupAddon, InputGroupText,
+  InputGroup, InputGroupAddon, InputGroupText, Input
 } from 'reactstrap'
 import _ from 'lodash';
 import { AppSwitch } from '@coreui/react'
 import { Researcher, Paper } from "yoastseo"
 import SweetAlert from 'react-bootstrap-sweetalert'
 import { Editor } from '@tinymce/tinymce-react';
+import TagsInput from 'react-tagsinput'
+import 'react-tagsinput/react-tagsinput.css'
 
 import { fetchPost, createPost, updatePost } from '../../api/Post'
 import { fetchList } from '../../api/Category'
@@ -34,8 +36,10 @@ class PostDetail extends Component {
       name: '',
       post_url_key: '',
       status: 2,
-      content: ''
+      content: '',
+      seo_keywords: ''
     },
+    seoKeywords: [],
     categories: [],
     defaultSelectedCategory: [],
     selectedCategory: [],
@@ -43,12 +47,34 @@ class PostDetail extends Component {
       name: '',
       post_url_key: '',
       status: 2,
-      content: ''
+      content: '',
+      seo_keywords: ''
     },
     renderState: {
       showSuccessDialog: false,
     },
-    seoChecker: {
+    defaultYoastSEOPaperAttribute: {
+      keyword: "",
+      synonyms: "",
+      description: "",
+      title: "",
+      url: FRONT_WEB_DETAIL_BASE_URL,
+      locale: "en_US",
+      permalink: ""
+    },
+    yoastSEOPaperAttribute: {
+      keyword: "",
+      synonyms: "",
+      description: "",
+      title: "",
+      url: FRONT_WEB_DETAIL_BASE_URL,
+      locale: "en_US",
+      permalink: ""
+    },
+    seoAnalyzeRule: {
+      url: ['urlLength']
+    },
+    seoAnalyzerResult: {
       urlLength: undefined,
       wordCountInText: undefined,
       findKeywordInPageTitle: undefined,
@@ -89,17 +115,16 @@ class PostDetail extends Component {
     }
   }
 
-  updateSEOChecker = () => {
-    const paper = new Paper( this.state.formPostInput.content, {
-      keyword: "analyze",
-    });
+  seoAnalyze = () => {
+    const paper = new Paper( this.state.formPostInput.content, this.state.yoastSEOPaperAttribute);
     const researcher = new Researcher( paper );
-    let seoChecker = {...this.state.seoChecker}
-    Object.keys(seoChecker).forEach((key) => {
-      seoChecker[key] = researcher.getResearch(key)
+    let seoAnalyzerResult = {...this.state.seoAnalyzerResult}
+    Object.keys(seoAnalyzerResult).forEach((key) => {
+      seoAnalyzerResult[key] = researcher.getResearch(key)
     })
+    console.log(seoAnalyzerResult)
     this.setState({
-      seoChecker: seoChecker
+      seoAnalyzerResult: seoAnalyzerResult
     })
   }
 
@@ -108,7 +133,6 @@ class PostDetail extends Component {
     if(id) {
       this.getDetail(id)
     }
-    this.updateSEOChecker()
     this.getCategoryList()
   }
 
@@ -144,21 +168,35 @@ class PostDetail extends Component {
         let selectedCategory = resData.categories.map((category)=>{
           return category.id
         })
+        let defaultYoastSEOPaperAttribute = {
+          description: resData.social_description,
+          title: resData.name,
+          url: FRONT_WEB_DETAIL_BASE_URL+resData.post_url_key,
+          locale: resData.locale || 'en_US',
+          keyword: resData.seo_keywords || '',
+          permalink: resData.permalink || '',
+          synonyms: resData.synonyms || ''
+        }
         this.setState({
           defaultData: resData,
           formPostInput: resData,
           defaultSelectedCategory: selectedCategory,
-          selectedCategory: selectedCategory
+          selectedCategory: selectedCategory,
+          defaultYoastSEOPaperAttribute: defaultYoastSEOPaperAttribute,
+          yoastSEOPaperAttribute: defaultYoastSEOPaperAttribute,
+          seoKeywords: (resData.seo_keywords)? resData.seo_keywords.split(',') : []
         })
+        this.seoAnalyze()
       }
-      this.updateSEOChecker()
     })
   }
 
   reset = () => {
     this.setState({
+      yoastSEOPaperAttribute: {...this.state.yoastSEOPaperAttribute},
       formPostInput: {...this.state.defaultData},
-      selectedCategory: [...this.state.defaultSelectedCategory]
+      selectedCategory: [...this.state.defaultSelectedCategory],
+      seoKeywords: (this.state.defaultData.seo_keywords)? this.state.defaultData.seo_keywords.split(',') : []
     })
   }
 
@@ -167,7 +205,7 @@ class PostDetail extends Component {
     post[event.target.id] = event.target.value
     this.setState({
       formPostInput: post
-    });
+    })
   }
 
   handleContentChange = (event) => {
@@ -178,11 +216,24 @@ class PostDetail extends Component {
     });
   }
 
-  renderCardHeaderContent = () => {
-    if(this.state.defaultData.id) {
-      return (<strong><i className="icon-info pr-1"></i>Post id: {this.state.defaultData.id}</strong>)
-    }
-    return (<strong><i className="icon-info pr-1"></i>New Post</strong>)
+  handleUrlChange = (event) => {
+    let post = {...this.state.formPostInput}
+    let yoastSEOPaperAttribute = {...this.state.yoastSEOPaperAttribute}
+    post.post_url_key = event.target.value
+    yoastSEOPaperAttribute.url = FRONT_WEB_DETAIL_BASE_URL+event.target.value
+    this.setState({
+      formPostInput: post,
+      yoastSEOPaperAttribute: yoastSEOPaperAttribute
+    });
+  }
+
+  handleKeywordChange = (keywords) => {
+    this.setState({
+      formPostInput: {...this.state.formPostInput, ...{
+        keyword: keywords.toString()
+      }},
+      seoKeywords: keywords
+    })
   }
 
   updateSuccess = () => {
@@ -193,6 +244,13 @@ class PostDetail extends Component {
       return true
     }
     this.props.history.push('/post')
+  }
+
+  renderCardHeaderContent = () => {
+    if(this.state.defaultData.id) {
+      return (<strong><i className="icon-info pr-1"></i>Post id: {this.state.defaultData.id}</strong>)
+    }
+    return (<strong><i className="icon-info pr-1"></i>New Post</strong>)
   }
 
   renderSuccessDialog = () => {
@@ -251,14 +309,6 @@ class PostDetail extends Component {
     )
   }
 
-  renderSeoCheckerRow = () => {
-    return
-  }
-
-  renderSeoChecker = () => {
-    return
-  }
-
   render() {
     let post = this.state.formPostInput
     return (
@@ -273,8 +323,13 @@ class PostDetail extends Component {
               <CardBody>
                 <Form>
                   <FormGroup>
+                    <Label htmlFor="name">SEO Keywords</Label>
+                    <TagsInput value={this.state.seoKeywords} onChange={this.handleKeywordChange} addKeys={[188, 9, 13]}/>
+                    <FormText className="help-block">Please enter post keywords</FormText>
+                  </FormGroup>
+                  <FormGroup>
                     <Label htmlFor="name">Name</Label>
-                    <input className="form-control" type="text" id="name" placeholder="Enter Name.." value={post.name} onChange={this.handleChange}/>
+                    <Input type="text" id="name" value={post.name} onChange={this.handleChange} placeholder="Enter Name.."/>
                     <FormText className="help-block">Please enter post name</FormText>
                   </FormGroup>
                   <FormGroup>
@@ -283,7 +338,7 @@ class PostDetail extends Component {
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>{FRONT_WEB_DETAIL_BASE_URL}</InputGroupText>
                       </InputGroupAddon>
-                      <input className="form-control" type="text" id="post_url_key" placeholder="Enter Name.." value={post.post_url_key} onChange={this.handleChange}/>
+                      <Input type="text" id="post_url_key" value={post.post_url_key} onChange={this.handleChange} placeholder="Enter URL Key.."/>
                     </InputGroup>
                     <FormText className="help-block">Please enter post name</FormText>
                   </FormGroup>
