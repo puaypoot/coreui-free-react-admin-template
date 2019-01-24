@@ -28,6 +28,8 @@
     "font-awesome": "^4.7.0",
     "node-sass": "^4.11.0",
     "prop-types": "^15.6.2",
+    "rc-pagination": "^1.17.8",
+    "rc-select": "^8.7.1",
     "react": "^16.7.0",
     "react-app-polyfill": "^0.2.0",
     "react-bootstrap-sweetalert": "^4.4.1",

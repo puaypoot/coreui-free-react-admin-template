@@ -1,7 +1,15 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Card, CardBody, CardHeader, Col, Row, Table, Button } from 'reactstrap';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import {
+  Card, CardBody, CardHeader, CardFooter,
+  Col, Row, Table, Button
+} from 'reactstrap'
 import SweetAlert from 'react-bootstrap-sweetalert'
+import Select from 'rc-select'
+import Pagination from 'rc-pagination'
+import localeInfo from 'rc-pagination/lib/locale/en_US'
+import 'rc-pagination/assets/index.css'
+import 'rc-select/assets/index.css'
 
 import { fetchList, deletePost } from '../../api/Post'
 
@@ -16,7 +24,6 @@ function PostRow(props) {
     <tr key={post.id.toString()}>
       <th scope="row"><Link to={postLink}>{post.id}</Link></th>
       <td><Link to={postLink}>{post.name}</Link></td>
-      <td>{post.slug}</td>
       <td>
         <Link to={postLink}>
           <Button size="sm" color="warning" className="btn-pill"><i className="fa fa-edit"></i>&nbsp;Edit</Button>
@@ -32,7 +39,17 @@ class Posts extends Component {
   state = {
     list: [],
     focusingPost: undefined,
-    showSuccessDialog: false
+    showSuccessDialog: false,
+    pagination: {
+      total: 0
+    },
+    queryParams: {
+      search: '',
+      page: 1,
+      limit: 40,
+      category_slug: '',
+      place_slug: ''
+    }
   }
 
   componentDidMount() {
@@ -40,10 +57,12 @@ class Posts extends Component {
   }
 
   getList = () => {
-    fetchList({}).then(response => {
-      let list = response.data.data || []
+    fetchList(this.state.queryParams).then(response => {
       this.setState({
-        list: list
+        list: response.data.data || [],
+        pagination: {
+          total: response.data.total || 0
+        },
       })
     })
   }
@@ -73,6 +92,18 @@ class Posts extends Component {
     this.setState({
       focusingPost: post
     })
+  }
+
+  handlePaginationChange = async (current, pageSize) => {
+    await this.setState({
+      queryParams: {
+        ...this.state.queryParams, ...{
+          page: current,
+          limit: pageSize
+        }
+      }
+    })
+    this.getList()
   }
 
   renderWarningDialog(){
@@ -116,9 +147,9 @@ class Posts extends Component {
               <CardHeader>
                   <i className="fa fa-align-justify"></i> Posts
                 <div className="card-header-actions">
-                  {/* <Link to='post/create'>
+                  <Link to='post/create'>
                     <Button size="sm" color="primary" className="btn-pill"><i className="fa fa-plus"></i>&nbsp;Create Post</Button>
-                  </Link> */}
+                  </Link>
                 </div>
               </CardHeader>
               <CardBody>
@@ -127,7 +158,6 @@ class Posts extends Component {
                     <tr>
                       <th scope="col">id</th>
                       <th scope="col">name</th>
-                      <th scope="col">slug</th>
                       <th scope="col">action</th>
                     </tr>
                   </thead>
@@ -138,6 +168,20 @@ class Posts extends Component {
                   </tbody>
                 </Table>
               </CardBody>
+              <CardFooter>
+                <Pagination
+                  selectComponentClass={Select}
+                  showSizeChanger
+                  defaultPageSize={40}
+                  onShowSizeChange={this.handlePaginationChange}
+                  showQuickJumper
+                  onChange={this.handlePaginationChange}
+                  current={this.state.queryParams.page}
+                  total={this.state.pagination.total}
+                  showTotal={(total, range) => `${range[0]} - ${range[1]} of ${total} items`}
+                  locale={localeInfo}
+                />
+              </CardFooter>
             </Card>
           </Col>
         </Row>
@@ -146,4 +190,4 @@ class Posts extends Component {
   }
 }
 
-export default Posts;
+export default Posts
