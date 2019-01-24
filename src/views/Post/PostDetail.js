@@ -170,9 +170,17 @@ class PostDetail extends Component {
     });
   }
 
+  handleContentChange = (event) => {
+    let post = {...this.state.formPostInput}
+    post.content = event.target.getContent()
+    this.setState({
+      formPostInput: post
+    });
+  }
+
   renderCardHeaderContent = () => {
-    if(this.state.id) {
-      return (<strong><i className="icon-info pr-1"></i>Post id: {this.state.id}</strong>)
+    if(this.state.defaultData.id) {
+      return (<strong><i className="icon-info pr-1"></i>Post id: {this.state.defaultData.id}</strong>)
     }
     return (<strong><i className="icon-info pr-1"></i>New Post</strong>)
   }
@@ -282,12 +290,14 @@ class PostDetail extends Component {
                   <FormGroup>
                     <Label htmlFor="name">Content</Label>
                         <Editor
+                          onChange={this.handleContentChange}
                           value={post.content}
                           apiKey={TINYMCE_API_KEY}
                           init={tinymceSetting}
                         />
                   </FormGroup>
                 </Form>
+
               </CardBody>
               <CardFooter>
                 <Button size="lg" onClick={this.submitData} color="primary"><i className="fa fa-dot-circle-o"></i> Submit</Button>&nbsp;
@@ -320,9 +330,6 @@ class PostDetail extends Component {
               </CardBody>
             </Card>
           </Col>
-        </Row>
-        <Row>
-
         </Row>
       </div>
     )
